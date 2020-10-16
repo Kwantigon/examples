@@ -1,5 +1,0 @@
-*.o
-*.dep
-example
-example.pb.h
-example.pb.cc
