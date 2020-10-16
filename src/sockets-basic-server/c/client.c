@@ -1,6 +1,8 @@
 #include "shared.h"
+#include <time.h>
+#include <stdlib.h>
 
-int main ()
+static int server_time (struct tm* result)
 {
     // Create client socket object.
     //
@@ -21,15 +23,15 @@ int main ()
     server_address.sin_port = htons (SERVER_PORT);
 
     // Connect to server.
+	// Read the time string into buffer.
 
     int connect_status = connect (client_socket, (struct sockaddr *) &server_address, sizeof (server_address));
     ASSERT (connect_status == 0, "Failed to connect to server.");
     printf ("Established outgoing connection.\n");
 
-    int buffer [SOCKET_BUFFER_SIZE];
+    char buffer [SOCKET_BUFFER_SIZE];
     ssize_t read_size = read (client_socket, buffer, sizeof (buffer));
     ASSERT (read_size >= 0, "Failed to read from outgoing connection.");
-    printf ("Received message: %d\n", buffer);
 
     // Clean up by closing the socket.
     //
@@ -43,4 +45,50 @@ int main ()
 
     int close_status = close (client_socket);
     ASSERT (close_status == 0, "Failed to close incoming connection.");
+
+	// Convert the string in buffer to time_t (= long int)
+	
+	printf("Hour: %d\n", result->tm_hour); // silencing compiler
+
+	long int seconds = atol(buffer);
+	result = localtime(&seconds);
+	return 0;
+}
+
+int main() {
+
+	time_t s;
+	time(&s);
+	struct tm* time = localtime (&s); // just to silence the compiler.
+
+	int i = 0;
+	i = server_time(time);
+	if (i == 0) {
+		printf("%d-", 1900 + time->tm_year);
+		printf("%d-", time->tm_mon);
+		printf("%d ", time->tm_mday);
+
+		if (time->tm_hour < 10) {
+			printf("0%d:", time->tm_hour);
+		} else {
+			printf("%d:", time->tm_hour);
+		}
+
+		if (time->tm_min < 10) {
+			printf("0%d:", time->tm_min);
+		} else {
+			printf("%d:", time->tm_min);
+		}
+
+		if (time->tm_sec < 10) {
+			printf("0%d:", time->tm_sec);
+		} else {
+			printf("%d\n", time->tm_sec);
+		}
+		
+	} else {
+		printf("%s\n", "Could not get server time.");
+	}
+
+	return 0;
 }

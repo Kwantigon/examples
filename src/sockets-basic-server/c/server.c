@@ -47,31 +47,18 @@ int main ()
 
         printf ("Accepted an incoming connection.\n");
 
-        int buffer [SOCKET_BUFFER_SIZE];
+		// Get the curent server time in seconds using time()
 		time_t seconds;
 		time(&seconds);
-		struct tm* t = localtime(&seconds);
 
-		int YY = 1900 + t->tm_year;
-		int MM = t->tm_mon;
-		int DD = t->tm_mday;
-		int hour = t->tm_hour;
-		int min = t->tm_min;
-		int sec = t->tm_sec;
-		buffer[0] = YY;
-		ssize_t write_size = write (client_socket, buffer, 1);
+		// Convert the number representing current time to a string.
+		char buffer [SOCKET_BUFFER_SIZE];
+		sprintf(buffer, "%ld", seconds);
 
-        // Just copy everything back to the client.
-
-        //while (TRUE) {
-            //ssize_t read_size = read (client_socket, buffer, sizeof (buffer));
-            //ASSERT (read_size >= 0, "Failed to read from incoming connection.");
-            //if (read_size == 0) break;
-            //ssize_t write_size = write (client_socket, buffer, read_size);
-            //ASSERT (write_size == read_size, "Failed to write to incoming connection.");
-        //}
-
-        printf ("Client disconnected.\n");
+		// Send the buffered current time to the client.
+		ssize_t message_size = strlen (buffer);
+		ssize_t write_size = write (client_socket, buffer, message_size);
+		ASSERT (write_size == message_size, "Failed to write to outgoing connection.");
 
         // Clean up by closing the socket.
         //
