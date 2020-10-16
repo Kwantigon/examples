@@ -26,10 +26,19 @@ int main ()
     ASSERT (connect_status == 0, "Failed to connect to server.");
     printf ("Established outgoing connection.\n");
 
-    int buffer [SOCKET_BUFFER_SIZE];
+    // Just send and receive something.
+    //
+    // We assume that the response is a zero terminated string.
+
+    const char *message = "Hello !";
+    ssize_t message_size = strlen (message);
+    ssize_t write_size = write (client_socket, message, message_size);
+    ASSERT (write_size == message_size, "Failed to write to outgoing connection.");
+
+    char buffer [SOCKET_BUFFER_SIZE];
     ssize_t read_size = read (client_socket, buffer, sizeof (buffer));
     ASSERT (read_size >= 0, "Failed to read from outgoing connection.");
-    printf ("Received message: %d\n", buffer);
+    printf ("Received message: %s\n", buffer);
 
     // Clean up by closing the socket.
     //
