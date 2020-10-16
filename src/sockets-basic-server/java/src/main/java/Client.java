@@ -53,6 +53,22 @@ public class Client {
         int yy = timeNow.getYear();
         int mm = timeNow.getMonthValue();
         int dd = timeNow.getDayOfMonth();
-        System.out.printf("%d-%d-%d %d:%d:%d\n", yy, mm, dd, hour, min, sec);
+        System.out.printf("%d-%d-%d ", yy, mm, dd);
+
+	if (hour < 10) {
+	    System.out.printf("0%d:", hour);
+	} else {
+	    System.out.printf("%d:", hour);
+	}
+	if (min < 10) {
+	    System.out.printf("0%d:", min);
+	} else {
+	    System.out.printf("%d:", min);
+	}
+	if (sec < 10) {
+	    System.out.printf("0%d", sec);
+	} else {
+	    System.out.printf("%d\n", sec);
+	}
     }
 }
