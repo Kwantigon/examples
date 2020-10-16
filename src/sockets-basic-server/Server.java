@@ -20,13 +20,15 @@ public class Server {
                     System.out.println ("Accepted an incoming connection.");
 
                     try (
+                        InputStream input = client_socket.getInputStream ();
                         OutputStream output = client_socket.getOutputStream ();
                     ) {
-			Instant instant = Instant.now();
-			long seconds = instant.toEpochMilli() / 1000;
-			String timeString = Long.toString(seconds);
-			byte[] message = timeString.getBytes();
-			output.write(message);
+                        while (true) {
+                            // Just copy everything back to the client.
+                            int data = input.read ();
+                            if (data == -1) break;
+                            output.write (data);
+                        }
                     }
                     System.out.println ("Client disconnected.");
                 }
