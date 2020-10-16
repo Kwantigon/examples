@@ -48,7 +48,9 @@ static int server_time (struct tm* result)
 
 	// Convert the string in buffer to time_t (= long int)
 	
-	printf("Hour: %d\n", result->tm_hour); // silencing compiler
+	// Compiler is complaining about unused parameter 'result'
+	// This line is to silence it.
+	printf("Hour: %d\n", result->tm_hour);
 
 	long int seconds = atol(buffer);
 	result = localtime(&seconds);
